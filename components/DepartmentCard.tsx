@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { DepartmentDetails, DepartmentKey } from "./DepartmentDetails";
+import { ErrorState } from "./ErrorState";
+import { LoadingState } from "./LoadingState";
 import { Status, StatusBadge } from "./StatusBadge";
 
 export type DepartmentMetric = {
@@ -23,6 +25,7 @@ type DepartmentCardProps = {
   status: Status;
   metrics: DepartmentMetric[];
   onUnauthenticated: () => void;
+  onDataChanged: () => void;
 };
 
 export function DepartmentCard({
@@ -31,11 +34,13 @@ export function DepartmentCard({
   status,
   metrics,
   onUnauthenticated,
+  onDataChanged,
 }: DepartmentCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [details, setDetails] = useState<unknown>(null);
   const [detailsError, setDetailsError] = useState("");
   const [isLoadingDetails, setIsLoadingDetails] = useState(false);
+  const [actionSuccess, setActionSuccess] = useState("");
   const visibleMetrics = isExpanded ? metrics : metrics.slice(0, 2);
 
   async function loadDetails() {
@@ -70,6 +75,9 @@ export function DepartmentCard({
   function toggleExpanded() {
     const nextExpanded = !isExpanded;
     setIsExpanded(nextExpanded);
+    if (!nextExpanded) {
+      setActionSuccess("");
+    }
 
     if (nextExpanded && details === null && !isLoadingDetails) {
       void loadDetails();
@@ -106,25 +114,32 @@ export function DepartmentCard({
 
       {isExpanded && (
         <div className="mt-2 min-w-0 border-t border-slate-100 pt-2">
+          {actionSuccess && <p className="mt-3 text-sm text-emerald-700">{actionSuccess}</p>}
           {isLoadingDetails && (
-            <p className="mt-3 text-sm text-slate-600">Loading details...</p>
+            <LoadingState message="Loading department details..." compact />
           )}
 
           {detailsError && !isLoadingDetails && (
-            <div className="mt-3">
-              <p className="text-sm text-red-600">{detailsError}</p>
-              <button
-                className="mt-2 min-h-11 text-sm font-medium text-slate-700 underline underline-offset-4"
-                type="button"
-                onClick={() => void loadDetails()}
-              >
-                Try again
-              </button>
-            </div>
+            <ErrorState
+              title="Department details unavailable"
+              message={detailsError}
+              onRetry={() => void loadDetails()}
+              isRetrying={isLoadingDetails}
+              compact
+            />
           )}
 
           {details !== null && !isLoadingDetails && !detailsError && (
-            <DepartmentDetails department={department} data={details} />
+            <DepartmentDetails
+              department={department}
+              data={details}
+              onActionSuccess={(message) => {
+                setActionSuccess(message ?? "Action completed successfully.");
+                void loadDetails();
+                onDataChanged();
+              }}
+              onUnauthenticated={onUnauthenticated}
+            />
           )}
 
           <button

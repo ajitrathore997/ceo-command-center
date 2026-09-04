@@ -4,6 +4,8 @@ import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { DepartmentCard, DepartmentMetric } from "@/components/DepartmentCard";
 import { DepartmentKey } from "@/components/DepartmentDetails";
+import { ErrorState } from "@/components/ErrorState";
+import { LoadingState } from "@/components/LoadingState";
 import { Status } from "@/components/StatusBadge";
 
 type Department = {
@@ -72,8 +74,8 @@ export default function DashboardPage() {
 
   if (isLoading) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-slate-50 p-6 text-slate-700">
-        Loading dashboard...
+      <main className="flex min-h-screen items-center justify-center bg-slate-50 p-6">
+        <LoadingState message="Loading your department dashboard..." />
       </main>
     );
   }
@@ -81,19 +83,12 @@ export default function DashboardPage() {
   if (error || !dashboard) {
     return (
       <main className="flex min-h-screen items-center justify-center bg-slate-50 p-6 text-slate-900">
-        <section className="w-full max-w-sm rounded-xl bg-white p-6 text-center shadow-sm">
-          <h1 className="text-lg font-semibold">Dashboard unavailable</h1>
-          <p className="mt-2 text-sm text-slate-600">
-            {error || "Unable to load the dashboard right now."}
-          </p>
-          <button
-            className="mt-5 rounded-md bg-slate-900 px-4 py-2 text-sm font-medium text-white"
-            type="button"
-            onClick={retryDashboard}
-          >
-            Try again
-          </button>
-        </section>
+        <ErrorState
+          title="Dashboard unavailable"
+          message={error || "We could not load the dashboard right now."}
+          onRetry={retryDashboard}
+          isRetrying={isLoading}
+        />
       </main>
     );
   }
@@ -213,6 +208,7 @@ export default function DashboardPage() {
               status={department.status}
               metrics={metrics}
               onUnauthenticated={() => router.replace("/login")}
+              onDataChanged={() => void loadDashboard()}
             />
           ))}
         </section>

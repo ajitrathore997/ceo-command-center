@@ -24,7 +24,7 @@ export async function GET(request: Request) {
       dueDate: { lt: startOfToday },
     };
 
-    const [overdueTasks, completedToday, activeTeamMembers] = await Promise.all([
+    const [overdueTasks, completedToday, activeTeamMembers, activeEmployees] = await Promise.all([
       prisma.task.findMany({
         where: overdueFilter,
         include: { employee: { select: { id: true, name: true, department: true } } },
@@ -39,6 +39,11 @@ export async function GET(request: Request) {
       prisma.employee.count({
         where: { status: EmploymentStatus.ACTIVE, presentToday: true },
       }),
+      prisma.employee.findMany({
+        where: { status: EmploymentStatus.ACTIVE },
+        select: { id: true, name: true, department: true },
+        orderBy: { name: "asc" },
+      }),
     ]);
 
     return NextResponse.json({
@@ -47,6 +52,7 @@ export async function GET(request: Request) {
         completedToday,
         activeTeamMembers,
       },
+      activeEmployees,
       overdueTasks,
     });
   } catch (error) {
