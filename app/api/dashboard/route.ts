@@ -11,7 +11,7 @@ import { getDashboardConfig } from "@/lib/dashboard-config";
 import { prisma } from "@/lib/prisma";
 import {
   getFinanceStatus,
-  getHrStatus,
+  getHRStatus,
   getMarketingStatus,
   getOperationsStatus,
   getSalesStatus,
@@ -157,7 +157,7 @@ export async function GET(request: Request) {
           },
         },
         hr: {
-          status: getHrStatus(attendanceTodayPercentage),
+          status: getHRStatus(attendanceTodayPercentage),
           metrics: {
             totalHeadcount,
             openPositions,

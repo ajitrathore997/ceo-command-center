@@ -29,7 +29,7 @@ export function getMarketingStatus(leadsGeneratedThisWeek: number): DepartmentSt
   return "red";
 }
 
-export function getHrStatus(attendancePercentage: number): DepartmentStatus {
+export function getHRStatus(attendancePercentage: number): DepartmentStatus {
   if (attendancePercentage >= 90) return "green";
   if (attendancePercentage >= 80) return "amber";
   return "red";

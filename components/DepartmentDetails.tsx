@@ -166,7 +166,7 @@ function ActionButton({
 }) {
   return (
     <button
-      className="min-h-11 rounded-md bg-slate-900 px-3 text-sm font-medium text-white disabled:cursor-not-allowed disabled:opacity-60"
+      className="min-h-11 w-full rounded-md bg-slate-900 px-3 text-sm font-medium text-white disabled:cursor-not-allowed disabled:opacity-60 lg:w-auto"
       type="button"
       disabled={loading || disabled}
       onClick={onClick}
@@ -223,8 +223,8 @@ function SalesPanel({ data, onActionSuccess, onUnauthenticated }: { data: SalesD
         Full pipeline value {formatCurrency(data.summary.pipelineValue)} across{" "}
         {data.summary.activeDealCount} active deals.
       </p>
-      <div className="mt-4 flex flex-col gap-2 sm:flex-row">
-        <select className="min-h-11 min-w-0 rounded-md border border-slate-200 px-3 text-sm" value={selectedDealId} onChange={(event) => setSelectedDealId(event.target.value)} aria-label="Select a deal">
+      <div className="mt-4 flex flex-col gap-2 lg:flex-row">
+        <select className="min-h-11 min-w-0 w-full rounded-md border border-slate-200 px-3 text-sm lg:flex-1" value={selectedDealId} onChange={(event) => setSelectedDealId(event.target.value)} aria-label="Select a deal">
           <option value="">Select a deal</option>
           {data.activeDeals.map((deal) => <option key={deal.id} value={deal.id}>{deal.title}</option>)}
         </select>
@@ -287,12 +287,12 @@ function OperationsPanel({ data, onActionSuccess, onUnauthenticated }: { data: O
 
   return (
     <RecordList title="Overdue tasks" empty={data.overdueTasks.length === 0}>
-      <div className="mb-3 flex flex-col gap-2 sm:flex-row">
-        <select className="min-h-11 min-w-0 rounded-md border border-slate-200 px-3 text-sm" value={selectedTaskId} onChange={(event) => setSelectedTaskId(event.target.value)} aria-label="Select an overdue task">
+      <div className="mb-3 flex flex-col gap-2 lg:flex-row">
+        <select className="min-h-11 min-w-0 w-full rounded-md border border-slate-200 px-3 text-sm lg:flex-1" value={selectedTaskId} onChange={(event) => setSelectedTaskId(event.target.value)} aria-label="Select an overdue task">
           <option value="">Select a task</option>
           {data.overdueTasks.map((task) => <option key={task.id} value={task.id}>{task.title}</option>)}
         </select>
-        <select className="min-h-11 min-w-0 rounded-md border border-slate-200 px-3 text-sm" value={selectedEmployeeId} onChange={(event) => setSelectedEmployeeId(event.target.value)} aria-label="Select an employee">
+        <select className="min-h-11 min-w-0 w-full rounded-md border border-slate-200 px-3 text-sm lg:flex-1" value={selectedEmployeeId} onChange={(event) => setSelectedEmployeeId(event.target.value)} aria-label="Select an employee">
           <option value="">Select an employee</option>
           {data.activeEmployees.map((employee) => <option key={employee.id} value={employee.id}>{employee.name}</option>)}
         </select>
@@ -338,8 +338,8 @@ function FinancePanel({ data, onActionSuccess, onUnauthenticated }: { data: Fina
         Approved revenue this month {formatCurrency(data.summary.monthlyRevenue)} of{" "}
         {formatCurrency(data.summary.monthlyRevenueTarget)}.
       </p>
-      <div className="mt-4 flex flex-col gap-2 sm:flex-row">
-        <select className="min-h-11 min-w-0 rounded-md border border-slate-200 px-3 text-sm" value={selectedInvoiceId} onChange={(event) => setSelectedInvoiceId(event.target.value)} aria-label="Select a pending invoice">
+      <div className="mt-4 flex flex-col gap-2 lg:flex-row">
+        <select className="min-h-11 min-w-0 w-full rounded-md border border-slate-200 px-3 text-sm lg:flex-1" value={selectedInvoiceId} onChange={(event) => setSelectedInvoiceId(event.target.value)} aria-label="Select a pending invoice">
           <option value="">Select an invoice</option>
           {data.pendingInvoices.map((invoice) => <option key={invoice.id} value={invoice.id}>{invoice.customerName}</option>)}
         </select>
@@ -384,8 +384,8 @@ function MarketingPanel({ data, onActionSuccess, onUnauthenticated }: { data: Ma
 
   return (
     <RecordList title="Campaigns" empty={data.campaigns.length === 0}>
-      <div className="mb-3 flex flex-col gap-2 sm:flex-row">
-        <select className="min-h-11 min-w-0 rounded-md border border-slate-200 px-3 text-sm" value={selectedCampaignId} onChange={(event) => setSelectedCampaignId(event.target.value)} aria-label="Select a campaign">
+      <div className="mb-3 flex flex-col gap-2 lg:flex-row">
+        <select className="min-h-11 min-w-0 w-full rounded-md border border-slate-200 px-3 text-sm lg:flex-1" value={selectedCampaignId} onChange={(event) => setSelectedCampaignId(event.target.value)} aria-label="Select a campaign">
           <option value="">Select a campaign</option>
           {data.campaigns.map((campaign) => <option key={campaign.id} value={campaign.id}>{campaign.name}</option>)}
         </select>
@@ -427,8 +427,8 @@ function HrPanel({ data, onActionSuccess, onUnauthenticated }: { data: HrDetails
 
   return (
     <RecordList title="Pending leave requests" empty={data.pendingLeaveRequests.length === 0}>
-      <div className="mb-3 flex flex-col gap-2 sm:flex-row">
-        <select className="min-h-11 min-w-0 rounded-md border border-slate-200 px-3 text-sm" value={selectedRequestId} onChange={(event) => setSelectedRequestId(event.target.value)} aria-label="Select a pending leave request">
+      <div className="mb-3 flex flex-col gap-2 lg:flex-row">
+        <select className="min-h-11 min-w-0 w-full rounded-md border border-slate-200 px-3 text-sm lg:flex-1" value={selectedRequestId} onChange={(event) => setSelectedRequestId(event.target.value)} aria-label="Select a pending leave request">
           <option value="">Select a leave request</option>
           {data.pendingLeaveRequests.map((request) => <option key={request.id} value={request.id}>{request.employee.name}</option>)}
         </select>
