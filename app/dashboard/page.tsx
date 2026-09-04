@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { DepartmentCard, DepartmentMetric } from "@/components/DepartmentCard";
+import { DepartmentKey } from "@/components/DepartmentDetails";
 import { Status } from "@/components/StatusBadge";
 
 type Department = {
@@ -98,9 +99,15 @@ export default function DashboardPage() {
   }
 
   const { departments } = dashboard;
-  const cards: Array<{ name: string; department: Department; metrics: DepartmentMetric[] }> = [
+  const cards: Array<{
+    name: string;
+    key: DepartmentKey;
+    department: Department;
+    metrics: DepartmentMetric[];
+  }> = [
     {
       name: "Sales",
+      key: "sales",
       department: departments.sales,
       metrics: [
         { label: "Active deals", value: departments.sales.metrics.activeDeals ?? 0 },
@@ -116,6 +123,7 @@ export default function DashboardPage() {
     },
     {
       name: "Operations",
+      key: "operations",
       department: departments.operations,
       metrics: [
         { label: "Overdue tasks", value: departments.operations.metrics.overdueTasks ?? 0 },
@@ -131,6 +139,7 @@ export default function DashboardPage() {
     },
     {
       name: "Finance",
+      key: "finance",
       department: departments.finance,
       metrics: [
         {
@@ -153,6 +162,7 @@ export default function DashboardPage() {
     },
     {
       name: "Marketing",
+      key: "marketing",
       department: departments.marketing,
       metrics: [
         {
@@ -171,6 +181,7 @@ export default function DashboardPage() {
     },
     {
       name: "HR",
+      key: "hr",
       department: departments.hr,
       metrics: [
         { label: "Total headcount", value: departments.hr.metrics.totalHeadcount ?? 0 },
@@ -193,13 +204,15 @@ export default function DashboardPage() {
           <h1 className="mt-1 text-2xl font-semibold sm:text-3xl">Department overview</h1>
         </header>
 
-        <section className="grid gap-4 md:grid-cols-2" aria-label="Department status">
-          {cards.map(({ name, department, metrics }) => (
+        <section className="grid min-w-0 gap-4 md:grid-cols-2" aria-label="Department status">
+          {cards.map(({ name, key, department, metrics }) => (
             <DepartmentCard
               key={name}
               name={name}
+              department={key}
               status={department.status}
               metrics={metrics}
+              onUnauthenticated={() => router.replace("/login")}
             />
           ))}
         </section>
