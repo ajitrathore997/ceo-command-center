@@ -52,7 +52,7 @@ export async function POST(request: Request) {
     };
 
     const token = generateToken(safeUser);
-    const response = NextResponse.json({ token, user: safeUser });
+    const response = NextResponse.json({ user: safeUser });
 
     response.cookies.set({
       name: AUTH_COOKIE_NAME,
