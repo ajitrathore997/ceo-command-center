@@ -6,6 +6,7 @@ import { DepartmentCard, DepartmentMetric } from "@/components/DepartmentCard";
 import { DepartmentKey } from "@/components/DepartmentDetails";
 import { ErrorState } from "@/components/ErrorState";
 import { LoadingState } from "@/components/LoadingState";
+import { LogoutButton } from "@/components/LogoutButton";
 import { Status } from "@/components/StatusBadge";
 
 type Department = {
@@ -194,9 +195,12 @@ export default function DashboardPage() {
   return (
     <main className="min-h-screen bg-slate-50 px-4 py-8 text-slate-900 sm:px-6">
       <div className="mx-auto max-w-5xl">
-        <header className="mb-6">
-          <p className="text-sm font-medium text-slate-500">CEO Command Center</p>
-          <h1 className="mt-1 text-2xl font-semibold sm:text-3xl">Department overview</h1>
+        <header className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p className="text-sm font-medium text-slate-500">CEO Command Center</p>
+            <h1 className="mt-1 text-2xl font-semibold sm:text-3xl">Department overview</h1>
+          </div>
+          <LogoutButton />
         </header>
 
         <section className="grid min-w-0 gap-4 md:grid-cols-2" aria-label="Department status">

@@ -1,5 +1,6 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { UserRole } from "../generated/prisma/client";
 
@@ -11,6 +12,13 @@ export type AuthenticatedUser = {
 };
 
 export const AUTH_COOKIE_NAME = "ceo_command_center_token";
+
+export async function getAuthenticatedUserFromCookies() {
+  const cookieStore = await cookies();
+  const token = cookieStore.get(AUTH_COOKIE_NAME)?.value;
+
+  return token ? verifyToken(token) : null;
+}
 
 function getJwtSecret() {
   const secret = process.env.JWT_SECRET;
