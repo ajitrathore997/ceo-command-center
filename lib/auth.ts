@@ -1,5 +1,6 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { NextResponse } from "next/server";
 import { UserRole } from "../generated/prisma/client";
 
 export type AuthenticatedUser = {
@@ -50,4 +51,26 @@ export function verifyToken(token: string): AuthenticatedUser | null {
   } catch {
     return null;
   }
+}
+
+type AuthenticationResult =
+  | { authenticated: true; user: AuthenticatedUser }
+  | { authenticated: false; response: NextResponse };
+
+export function requireAuthentication(request: Request): AuthenticationResult {
+  const authorization = request.headers.get("authorization");
+  const match = authorization?.match(/^Bearer\s+(.+)$/i);
+  const user = match ? verifyToken(match[1]) : null;
+
+  if (!user) {
+    return {
+      authenticated: false,
+      response: NextResponse.json(
+        { error: "Authentication is required." },
+        { status: 401 },
+      ),
+    };
+  }
+
+  return { authenticated: true, user };
 }
