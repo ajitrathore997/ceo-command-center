@@ -10,6 +10,8 @@ export type AuthenticatedUser = {
   role: UserRole;
 };
 
+export const AUTH_COOKIE_NAME = "ceo_command_center_token";
+
 function getJwtSecret() {
   const secret = process.env.JWT_SECRET;
 
@@ -57,10 +59,22 @@ type AuthenticationResult =
   | { authenticated: true; user: AuthenticatedUser }
   | { authenticated: false; response: NextResponse };
 
+function getCookieValue(cookieHeader: string | null, name: string) {
+  if (!cookieHeader) return null;
+
+  const cookie = cookieHeader
+    .split(";")
+    .map((value) => value.trim())
+    .find((value) => value.startsWith(`${name}=`));
+
+  return cookie ? decodeURIComponent(cookie.slice(name.length + 1)) : null;
+}
+
 export function requireAuthentication(request: Request): AuthenticationResult {
   const authorization = request.headers.get("authorization");
   const match = authorization?.match(/^Bearer\s+(.+)$/i);
-  const user = match ? verifyToken(match[1]) : null;
+  const token = match?.[1] ?? getCookieValue(request.headers.get("cookie"), AUTH_COOKIE_NAME);
+  const user = token ? verifyToken(token) : null;
 
   if (!user) {
     return {

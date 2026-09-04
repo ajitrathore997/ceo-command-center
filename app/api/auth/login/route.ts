@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { generateToken, verifyPassword } from "@/lib/auth";
+import { AUTH_COOKIE_NAME, generateToken, verifyPassword } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
 type LoginRequest = {
@@ -51,10 +51,20 @@ export async function POST(request: Request) {
       role: user.role,
     };
 
-    return NextResponse.json({
-      token: generateToken(safeUser),
-      user: safeUser,
+    const token = generateToken(safeUser);
+    const response = NextResponse.json({ token, user: safeUser });
+
+    response.cookies.set({
+      name: AUTH_COOKIE_NAME,
+      value: token,
+      httpOnly: true,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+      path: "/",
+      maxAge: 60 * 60 * 8,
     });
+
+    return response;
   } catch (error) {
     console.error("Login failed:", error);
 
