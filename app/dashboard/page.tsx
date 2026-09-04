@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { DepartmentCard, DepartmentMetric } from "@/components/DepartmentCard";
 import { DepartmentKey } from "@/components/DepartmentDetails";
+import { CriticalAlert } from "@/components/CriticalAlert";
 import { ErrorState } from "@/components/ErrorState";
 import { LoadingState } from "@/components/LoadingState";
 import { LogoutButton } from "@/components/LogoutButton";
@@ -32,6 +33,65 @@ const formatCurrency = (value: number) =>
   }).format(value);
 
 const formatPercentage = (value: number) => `${value}%`;
+
+type CriticalAlertData = {
+  department: string;
+  message: string;
+  priority: number;
+};
+
+function getCriticalAlert(departments: DashboardData["departments"]): CriticalAlertData | null {
+  // Metric gaps are not directly comparable, so business-impact tiers break ties.
+  // Operations and Finance take precedence because overdue work and revenue risk
+  // are the most immediate executive concerns.
+  const candidates: Array<CriticalAlertData & { status: Status }> = [
+    {
+      department: "Operations",
+      status: departments.operations.status,
+      priority: 500 + Number(departments.operations.metrics.overdueTasks ?? 0),
+      message: `Critical: Operations has ${departments.operations.metrics.overdueTasks ?? 0} overdue tasks.`,
+    },
+    {
+      department: "Finance",
+      status: departments.finance.status,
+      priority: 400 + Math.max(
+        0,
+        100 - Number(departments.finance.metrics.revenueAchievementPercentage ?? 0),
+      ),
+      message: `Critical: Finance revenue is at ${departments.finance.metrics.revenueAchievementPercentage ?? 0}% of target.`,
+    },
+    {
+      department: "HR",
+      status: departments.hr.status,
+      priority: 300 + Math.max(
+        0,
+        100 - Number(departments.hr.metrics.attendanceTodayPercentage ?? 0),
+      ),
+      message: `Critical: HR attendance is ${departments.hr.metrics.attendanceTodayPercentage ?? 0}%.`,
+    },
+    {
+      department: "Marketing",
+      status: departments.marketing.status,
+      priority: 200 + Math.max(
+        0,
+        100 - Number(departments.marketing.metrics.leadsGeneratedThisWeek ?? 0),
+      ),
+      message: `Critical: Marketing generated ${departments.marketing.metrics.leadsGeneratedThisWeek ?? 0} leads this week.`,
+    },
+    {
+      department: "Sales",
+      status: departments.sales.status,
+      priority: 100 +
+        Math.max(0, 20 - Number(departments.sales.metrics.activeDeals ?? 0)) +
+        Math.max(0, 5 - Number(departments.sales.metrics.dealsClosedThisWeek ?? 0)) * 2,
+      message: `Critical: Sales has ${departments.sales.metrics.activeDeals ?? 0} active deals and ${departments.sales.metrics.dealsClosedThisWeek ?? 0} deals closed this week.`,
+    },
+  ];
+
+  return candidates
+    .filter((candidate) => candidate.status === "red")
+    .sort((first, second) => second.priority - first.priority)[0] ?? null;
+}
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -95,6 +155,7 @@ export default function DashboardPage() {
   }
 
   const { departments } = dashboard;
+  const criticalAlert = getCriticalAlert(departments);
   const cards: Array<{
     name: string;
     key: DepartmentKey;
@@ -202,6 +263,11 @@ export default function DashboardPage() {
           </div>
           <LogoutButton />
         </header>
+
+        <CriticalAlert
+          isCritical={criticalAlert !== null}
+          message={criticalAlert?.message ?? "All departments are on track."}
+        />
 
         <section className="grid min-w-0 gap-4 md:grid-cols-2" aria-label="Department status">
           {cards.map(({ name, key, department, metrics }) => (
