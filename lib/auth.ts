@@ -88,3 +88,14 @@ export function requireAuthentication(request: Request): AuthenticationResult {
 
   return { authenticated: true, user };
 }
+
+export function requireRole(user: AuthenticatedUser, role: UserRole) {
+  if (user.role !== role) {
+    return NextResponse.json(
+      { error: "CEO authorization is required." },
+      { status: 403 },
+    );
+  }
+
+  return null;
+}

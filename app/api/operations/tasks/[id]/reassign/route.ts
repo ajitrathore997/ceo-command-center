@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { EmploymentStatus, TaskStatus } from "@/generated/prisma/client";
-import { requireAuthentication } from "@/lib/auth";
+import { requireAuthentication, requireRole } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
 type ReassignTaskRequest = {
@@ -26,6 +26,11 @@ export async function PATCH(request: Request, { params }: RouteContext) {
 
   if (!authentication.authenticated) {
     return authentication.response;
+  }
+
+  const authorization = requireRole(authentication.user, "CEO");
+  if (authorization) {
+    return authorization;
   }
 
   const { id } = await params;
