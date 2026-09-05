@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { DepartmentCard, DepartmentMetric } from "@/components/DepartmentCard";
 import { DepartmentKey } from "@/components/DepartmentDetails";
@@ -33,6 +33,7 @@ const formatCurrency = (value: number) =>
   }).format(value);
 
 const formatPercentage = (value: number) => `${value}%`;
+const dashboardPollInterval = 30_000;
 
 type CriticalAlertData = {
   department: string;
@@ -98,42 +99,69 @@ export default function DashboardPage() {
   const [dashboard, setDashboard] = useState<DashboardData | null>(null);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+  const requestInFlight = useRef(false);
 
-  const loadDashboard = useCallback(() => {
-    return fetch("/api/dashboard", { credentials: "same-origin" }).then(
-      async (response) => {
-        if (response.status === 401) {
-          router.replace("/login");
-          return;
-        }
+  const loadDashboard = useCallback(async (showLoading = false) => {
+    if (requestInFlight.current) {
+      return;
+    }
 
-        const data = (await response.json()) as DashboardData & { error?: string };
+    requestInFlight.current = true;
+    if (showLoading) {
+      setIsLoading(true);
+    }
 
-        if (!response.ok) {
-          setError(data.error ?? "Unable to load the dashboard right now.");
-          return;
-        }
+    try {
+      const response = await fetch("/api/dashboard", { credentials: "same-origin" });
 
-        setDashboard(data);
-      },
-    ).catch(() => {
-      setError("Unable to load the dashboard right now. Please try again.");
-    }).finally(() => {
-      setIsLoading(false);
-    });
+      if (response.status === 401) {
+        router.replace("/login");
+        return;
+      }
+
+      const data = (await response.json()) as DashboardData & { error?: string };
+
+      if (!response.ok) {
+        setError(data.error ?? "Unable to load the dashboard right now.");
+        return;
+      }
+
+      setDashboard(data);
+      setError("");
+      setLastUpdated(new Date());
+    } catch {
+      setError("Unable to refresh the dashboard right now. We will try again automatically.");
+    } finally {
+      requestInFlight.current = false;
+      if (showLoading) {
+        setIsLoading(false);
+      }
+    }
   }, [router]);
 
   useEffect(() => {
-    void loadDashboard();
+    const initialLoad = window.setTimeout(() => {
+      void loadDashboard(true);
+    }, 0);
+
+    return () => window.clearTimeout(initialLoad);
+  }, [loadDashboard]);
+
+  useEffect(() => {
+    const interval = window.setInterval(() => {
+      void loadDashboard();
+    }, dashboardPollInterval);
+
+    return () => window.clearInterval(interval);
   }, [loadDashboard]);
 
   function retryDashboard() {
     setError("");
-    setIsLoading(true);
-    void loadDashboard();
+    void loadDashboard(!dashboard);
   }
 
-  if (isLoading) {
+  if (isLoading && !dashboard) {
     return (
       <main className="flex min-h-screen items-center justify-center bg-slate-50 p-6">
         <LoadingState message="Loading your department dashboard..." />
@@ -141,14 +169,14 @@ export default function DashboardPage() {
     );
   }
 
-  if (error || !dashboard) {
+  if (!dashboard) {
     return (
       <main className="flex min-h-screen items-center justify-center bg-slate-50 p-6 text-slate-900">
         <ErrorState
           title="Dashboard unavailable"
           message={error || "We could not load the dashboard right now."}
           onRetry={retryDashboard}
-          isRetrying={isLoading}
+          isRetrying={isLoading && !dashboard}
         />
       </main>
     );
@@ -260,9 +288,24 @@ export default function DashboardPage() {
           <div>
             <p className="text-sm font-medium text-slate-500">CEO Command Center</p>
             <h1 className="mt-1 text-2xl font-semibold sm:text-3xl">Department overview</h1>
+            {lastUpdated && (
+              <p className="mt-2 text-xs text-slate-500">
+                Last updated {lastUpdated.toLocaleTimeString()}
+              </p>
+            )}
           </div>
           <LogoutButton />
         </header>
+
+        {error && (
+          <ErrorState
+            title="Live refresh unavailable"
+            message={error}
+            onRetry={retryDashboard}
+            isRetrying={isLoading && !dashboard}
+            compact
+          />
+        )}
 
         <CriticalAlert
           isCritical={criticalAlert !== null}
