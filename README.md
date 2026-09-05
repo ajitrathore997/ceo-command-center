@@ -326,10 +326,19 @@ Polling was chosen because the application needs near-real-time updates without 
 
 ## Known limitations / future improvements
 
-- Test coverage could be expanded beyond the current implementation
-- Production session controls could be tightened further
-- Open positions and other operational values could eventually be stored as dynamic database records
-- If real-time collaboration requirements become stricter, event-driven updates could replace polling
+Activity history: Department cards currently focus on current KPIs and actions; a richer activity/history view could be added to show events such as approved invoices, won deals, campaign changes, and approved leave requests. Task reassignment history should specifically record the previous owner, new owner, person who made the change, timestamp, optional reason, and any due-date change so administrative actions remain traceable.
+
+Mutation safety: Department actions currently update the latest record directly. Production improvements should add conditional updates, optimistic locking, and append-only audit events to prevent stale concurrent changes from overwriting newer decisions.
+
+Test coverage: Additional automated tests could be added for API routes, authentication, and user interactions.
+
+Authentication: A more advanced session model could use short-lived access tokens, such as 15 minutes, with long-lived refresh tokens, such as 7 to 30 days.
+
+Secure refresh sessions: Refresh tokens could be stored in HTTP-only, Secure cookies with refresh-token rotation and revocation support.
+
+Real-time updates: Polling could be replaced with WebSockets or server-sent events if true real-time collaboration is required.
+
+Scalability: Caching, rate limiting, and additional observability could be introduced as usage grows.
 
 These are not defects in the current assessment, just sensible future extensions.
 
@@ -416,6 +425,7 @@ Build command:
 
 ```bash
 pnpm install --frozen-lockfile && pnpm exec prisma generate && pnpm exec prisma migrate deploy && pnpm run build
+```
 
 ## Quality summary
 
