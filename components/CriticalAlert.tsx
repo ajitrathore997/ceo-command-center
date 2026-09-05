@@ -8,8 +8,8 @@ export function CriticalAlert({ message, isCritical }: CriticalAlertProps) {
     <aside
       className={`mb-6 flex min-w-0 items-start gap-3 rounded-lg border px-4 py-3 text-sm ${
         isCritical
-          ? "border-red-200 bg-red-50 text-red-950"
-          : "border-emerald-200 bg-emerald-50 text-emerald-950"
+          ? "border-red-200 bg-red-50 text-red-950 dark:border-red-900/70 dark:bg-red-950/30 dark:text-red-100"
+          : "border-emerald-200 bg-emerald-50 text-emerald-950 dark:border-emerald-900/70 dark:bg-emerald-950/30 dark:text-emerald-100"
       }`}
       role={isCritical ? "alert" : "status"}
       aria-live="polite"

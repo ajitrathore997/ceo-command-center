@@ -104,9 +104,9 @@ function RecordList({
 }) {
   return (
     <section className="mt-4 min-w-0">
-      <h3 className="text-sm font-semibold text-slate-800">{title}</h3>
+      <h3 className="text-sm font-semibold text-foreground">{title}</h3>
       {empty ? (
-        <p className="mt-2 text-sm text-slate-500">No records to show.</p>
+        <p className="mt-2 text-sm text-muted">No records to show.</p>
       ) : (
         <ul className="mt-2 space-y-2">{children}</ul>
       )}
@@ -122,13 +122,13 @@ function RecordItem({
   meta: Array<{ label: string; value: string }>;
 }) {
   return (
-    <li className="min-w-0 rounded-lg border border-slate-100 bg-slate-50 px-3 py-2">
-      <p className="break-words text-sm font-medium text-slate-900">{title}</p>
+    <li className="min-w-0 rounded-lg border border-border bg-surface-muted px-3 py-2">
+      <p className="break-words text-sm font-medium text-foreground">{title}</p>
       <dl className="mt-1 grid gap-1">
         {meta.map((item) => (
           <div key={item.label} className="flex min-w-0 items-start justify-between gap-3 text-xs">
-            <dt className="shrink-0 text-slate-500">{item.label}</dt>
-            <dd className="min-w-0 break-words text-right text-slate-800">{item.value}</dd>
+            <dt className="shrink-0 text-muted">{item.label}</dt>
+            <dd className="min-w-0 break-words text-right text-foreground">{item.value}</dd>
           </div>
         ))}
       </dl>
@@ -166,7 +166,7 @@ function ActionButton({
 }) {
   return (
     <button
-      className="min-h-11 w-full rounded-md bg-slate-900 px-3 text-sm font-medium text-white disabled:cursor-not-allowed disabled:opacity-60 lg:w-auto"
+      className="min-h-11 w-full rounded-md bg-slate-900 px-3 text-sm font-medium text-white disabled:cursor-not-allowed disabled:opacity-60 dark:bg-slate-100 dark:text-slate-900 lg:w-auto"
       type="button"
       disabled={loading || disabled}
       onClick={onClick}
@@ -219,12 +219,12 @@ function SalesPanel({ data, onActionSuccess, onUnauthenticated }: { data: SalesD
 
   return (
     <>
-      <p className="mt-4 text-sm text-slate-600">
+      <p className="mt-4 text-sm text-muted">
         Full pipeline value {formatCurrency(data.summary.pipelineValue)} across{" "}
         {data.summary.activeDealCount} active deals.
       </p>
       <div className="mt-4 flex flex-col gap-2 lg:flex-row">
-        <select className="min-h-11 min-w-0 w-full rounded-md border border-slate-200 px-3 text-sm lg:flex-1" value={selectedDealId} onChange={(event) => setSelectedDealId(event.target.value)} aria-label="Select a deal">
+        <select className="min-h-11 min-w-0 w-full rounded-md border border-border bg-surface-alt px-3 text-sm text-foreground lg:flex-1" value={selectedDealId} onChange={(event) => setSelectedDealId(event.target.value)} aria-label="Select a deal">
           <option value="">Select a deal</option>
           {data.activeDeals.map((deal) => <option key={deal.id} value={deal.id}>{deal.title}</option>)}
         </select>
@@ -288,11 +288,11 @@ function OperationsPanel({ data, onActionSuccess, onUnauthenticated }: { data: O
   return (
     <RecordList title="Overdue tasks" empty={data.overdueTasks.length === 0}>
       <div className="mb-3 flex flex-col gap-2 lg:flex-row">
-        <select className="min-h-11 min-w-0 w-full rounded-md border border-slate-200 px-3 text-sm lg:flex-1" value={selectedTaskId} onChange={(event) => setSelectedTaskId(event.target.value)} aria-label="Select an overdue task">
+        <select className="min-h-11 min-w-0 w-full rounded-md border border-border bg-surface-alt px-3 text-sm text-foreground lg:flex-1" value={selectedTaskId} onChange={(event) => setSelectedTaskId(event.target.value)} aria-label="Select an overdue task">
           <option value="">Select a task</option>
           {data.overdueTasks.map((task) => <option key={task.id} value={task.id}>{task.title}</option>)}
         </select>
-        <select className="min-h-11 min-w-0 w-full rounded-md border border-slate-200 px-3 text-sm lg:flex-1" value={selectedEmployeeId} onChange={(event) => setSelectedEmployeeId(event.target.value)} aria-label="Select an employee">
+        <select className="min-h-11 min-w-0 w-full rounded-md border border-border bg-surface-alt px-3 text-sm text-foreground lg:flex-1" value={selectedEmployeeId} onChange={(event) => setSelectedEmployeeId(event.target.value)} aria-label="Select an employee">
           <option value="">Select an employee</option>
           {data.activeEmployees.map((employee) => <option key={employee.id} value={employee.id}>{employee.name}</option>)}
         </select>
@@ -385,7 +385,7 @@ function MarketingPanel({ data, onActionSuccess, onUnauthenticated }: { data: Ma
   return (
     <RecordList title="Campaigns" empty={data.campaigns.length === 0}>
       <div className="mb-3 flex flex-col gap-2 lg:flex-row">
-        <select className="min-h-11 min-w-0 w-full rounded-md border border-slate-200 px-3 text-sm lg:flex-1" value={selectedCampaignId} onChange={(event) => setSelectedCampaignId(event.target.value)} aria-label="Select a campaign">
+        <select className="min-h-11 min-w-0 w-full rounded-md border border-border bg-surface-alt px-3 text-sm text-foreground lg:flex-1" value={selectedCampaignId} onChange={(event) => setSelectedCampaignId(event.target.value)} aria-label="Select a campaign">
           <option value="">Select a campaign</option>
           {data.campaigns.map((campaign) => <option key={campaign.id} value={campaign.id}>{campaign.name}</option>)}
         </select>
@@ -428,7 +428,7 @@ function HrPanel({ data, onActionSuccess, onUnauthenticated }: { data: HrDetails
   return (
     <RecordList title="Pending leave requests" empty={data.pendingLeaveRequests.length === 0}>
       <div className="mb-3 flex flex-col gap-2 lg:flex-row">
-        <select className="min-h-11 min-w-0 w-full rounded-md border border-slate-200 px-3 text-sm lg:flex-1" value={selectedRequestId} onChange={(event) => setSelectedRequestId(event.target.value)} aria-label="Select a pending leave request">
+        <select className="min-h-11 min-w-0 w-full rounded-md border border-border bg-surface-alt px-3 text-sm text-foreground lg:flex-1" value={selectedRequestId} onChange={(event) => setSelectedRequestId(event.target.value)} aria-label="Select a pending leave request">
           <option value="">Select a leave request</option>
           {data.pendingLeaveRequests.map((request) => <option key={request.id} value={request.id}>{request.employee.name}</option>)}
         </select>

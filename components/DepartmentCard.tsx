@@ -85,7 +85,7 @@ export function DepartmentCard({
   }
 
   return (
-    <article className="min-w-0 overflow-hidden rounded-xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
+    <article className="min-w-0 overflow-hidden rounded-xl border border-border bg-surface p-4 shadow-sm shadow-[var(--shadow)] sm:p-5">
       <button
         className="flex w-full min-h-11 items-start justify-between gap-3 text-left"
         type="button"
@@ -93,8 +93,8 @@ export function DepartmentCard({
         aria-expanded={isExpanded}
       >
         <span className="min-w-0">
-          <span className="block text-lg font-semibold text-slate-900">{name}</span>
-          <span className="mt-1 block text-sm text-slate-500">
+          <span className="block text-lg font-semibold text-foreground">{name}</span>
+          <span className="mt-1 block text-sm text-muted">
             {isExpanded ? "Hide details" : "Show details"}
           </span>
         </span>
@@ -103,9 +103,9 @@ export function DepartmentCard({
 
       <dl className="mt-4 grid gap-3 sm:grid-cols-2">
         {visibleMetrics.map((metric) => (
-          <div key={metric.label} className="min-w-0 rounded-lg bg-slate-50 px-3 py-2">
-            <dt className="text-xs font-medium text-slate-500">{metric.label}</dt>
-            <dd className="mt-1 break-words text-base font-semibold text-slate-900">
+          <div key={metric.label} className="min-w-0 rounded-lg bg-surface-muted px-3 py-2">
+            <dt className="text-xs font-medium text-muted">{metric.label}</dt>
+            <dd className="mt-1 break-words text-base font-semibold text-foreground">
               {metric.value}
             </dd>
           </div>
@@ -113,8 +113,8 @@ export function DepartmentCard({
       </dl>
 
       {isExpanded && (
-        <div className="mt-2 min-w-0 border-t border-slate-100 pt-2">
-          {actionSuccess && <p className="mt-3 text-sm text-emerald-700">{actionSuccess}</p>}
+        <div className="mt-2 min-w-0 border-t border-border pt-2">
+          {actionSuccess && <p className="mt-3 text-sm text-emerald-700 dark:text-emerald-400">{actionSuccess}</p>}
           {isLoadingDetails && (
             <LoadingState message="Loading department details..." compact />
           )}
@@ -143,7 +143,7 @@ export function DepartmentCard({
           )}
 
           <button
-            className="mt-4 min-h-11 w-full rounded-md border border-slate-200 px-3 text-sm font-medium text-slate-800"
+            className="mt-4 min-h-11 w-full rounded-md border border-border bg-surface-alt px-3 text-sm font-medium text-foreground"
             type="button"
             onClick={toggleExpanded}
           >

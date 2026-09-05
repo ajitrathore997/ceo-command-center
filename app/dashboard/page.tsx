@@ -9,6 +9,7 @@ import { ErrorState } from "@/components/ErrorState";
 import { LoadingState } from "@/components/LoadingState";
 import { LogoutButton } from "@/components/LogoutButton";
 import { Status } from "@/components/StatusBadge";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 type Department = {
   status: Status;
@@ -282,19 +283,22 @@ export default function DashboardPage() {
   ];
 
   return (
-    <main className="min-h-screen bg-slate-50 px-4 py-8 text-slate-900 sm:px-6">
+    <main className="min-h-screen bg-background px-4 py-8 text-foreground sm:px-6">
       <div className="mx-auto max-w-5xl">
         <header className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="text-sm font-medium text-slate-500">CEO Command Center</p>
-            <h1 className="mt-1 text-2xl font-semibold sm:text-3xl">Department overview</h1>
+            <p className="text-sm font-medium text-muted">CEO Command Center</p>
+            <h1 className="mt-1 text-2xl font-semibold text-foreground sm:text-3xl">Department overview</h1>
             {lastUpdated && (
-              <p className="mt-2 text-xs text-slate-500">
+              <p className="mt-2 text-xs text-muted">
                 Last updated {lastUpdated.toLocaleTimeString()}
               </p>
             )}
           </div>
-          <LogoutButton />
+          <div className="flex items-center gap-3">
+            <ThemeToggle />
+            <LogoutButton />
+          </div>
         </header>
 
         {error && (

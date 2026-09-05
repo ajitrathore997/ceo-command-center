@@ -20,7 +20,7 @@ export function LogoutButton() {
 
   return (
     <button
-      className="min-h-11 rounded-md border border-slate-200 px-3 text-sm font-medium text-slate-700 disabled:cursor-not-allowed disabled:opacity-60"
+      className="min-h-11 rounded-md border border-border bg-surface-alt px-3 text-sm font-medium text-foreground disabled:cursor-not-allowed disabled:opacity-60"
       type="button"
       onClick={() => void handleLogout()}
       disabled={isLoggingOut}
