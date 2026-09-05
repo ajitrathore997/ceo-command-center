@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
   --background: #f8fafc;
   --foreground: #0f172a;
@@ -56,4 +58,17 @@ button,
 input,
 select {
   transition: border-color 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+}
+
+select {
+  color-scheme: light;
+}
+
+.dark select {
+  color-scheme: dark;
+}
+
+select option {
+  background: var(--surface-alt);
+  color: var(--foreground);
 }

@@ -355,8 +355,8 @@ Create a `.env` file in the project root with the required values:
 ```bash
 DATABASE_URL="postgresql://USER:PASSWORD@HOST:5432/DATABASE"
 JWT_SECRET="replace-with-a-long-random-secret"
-MONTHLY_REVENUE_TARGET=1500000
-OPEN_POSITIONS=8
+MONTHLY_REVENUE_TARGET=1000000
+OPEN_POSITIONS=3
 ```
 
 ### 4. Configure PostgreSQL
@@ -391,9 +391,31 @@ http://localhost:3000
 
 The project build command is:
 
-```bash
+Local build:
 corepack pnpm build
-```
+
+Render production build:
+pnpm install --frozen-lockfile &&
+pnpm exec prisma generate &&
+pnpm exec prisma migrate deploy &&
+pnpm run build
+
+## Deployment
+
+The assessment is deployed using Render.
+
+### Render PostgreSQL
+
+A PostgreSQL database is hosted on Render.
+
+### Render Web Service
+
+The Next.js application is deployed as a Render Web Service.
+
+Build command:
+
+```bash
+pnpm install --frozen-lockfile && pnpm exec prisma generate && pnpm exec prisma migrate deploy && pnpm run build
 
 ## Quality summary
 
